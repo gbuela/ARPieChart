@@ -5,7 +5,7 @@ A lightweight pie chart of pure Swift implementation, inspired by [XYPieChart](h
 ## Requirements
 
 * iOS 8.0+
-* Xcode 6.3
+* Xcode 8.*
 
 ## Installation
 
@@ -30,6 +30,13 @@ func pieChart(pieChart: ARPieChart, valueForSliceAtIndex index: Int) -> CGFloat
 func pieChart(pieChart: ARPieChart, colorForSliceAtIndex index: Int) -> UIColor
     
 func pieChart(pieChart: ARPieChart, descriptionForSliceAtIndex index: Int) -> String
+```
+
+or the item-based data source where you maintain and expose an array of items:
+
+```swift
+var pieChartItems: [PieChartItem] { get }
+
 ```
 
 Implement delegate:
