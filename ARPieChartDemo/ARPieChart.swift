@@ -43,6 +43,35 @@ public protocol ARPieChartDataSource: class {
     func pieChart(_ pieChart: ARPieChart, descriptionForSliceAtIndex index: Int) -> String
 }
 
+public struct PieChartItem {
+    let value: Float
+    let color: UIColor
+    let text: String?
+}
+
+public protocol ARPieChartItemDataSource: ARPieChartDataSource {
+    var pieChartItems: [PieChartItem] { get }
+}
+
+public extension ARPieChartItemDataSource {
+    
+    func numberOfSlicesInPieChart(_ pieChart: ARPieChart) -> Int {
+        return pieChartItems.count
+    }
+    
+    func pieChart(_ pieChart: ARPieChart, valueForSliceAtIndex index: Int) -> CGFloat {
+        return CGFloat(pieChartItems[index].value)
+    }
+
+    func pieChart(_ pieChart: ARPieChart, colorForSliceAtIndex index: Int) -> UIColor {
+        return pieChartItems[index].color
+    }
+    
+    func pieChart(_ pieChart: ARPieChart, descriptionForSliceAtIndex index: Int) -> String {
+        return pieChartItems[index].text ?? "\(pieChartItems[index].value)"
+    }
+}
+
 /**
 *  MARK: ARPieChart delegate
 */

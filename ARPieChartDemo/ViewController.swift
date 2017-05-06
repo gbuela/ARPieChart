@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource {
+class ViewController: UIViewController, ARPieChartDelegate, ARPieChartItemDataSource {
     
     
     @IBOutlet weak var pieChart: ARPieChart!
@@ -17,7 +17,7 @@ class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource
     @IBOutlet weak var outerRadiusSlider: UISlider!
     @IBOutlet weak var innerRadiusSlider: UISlider!
     
-    var dataItems: NSMutableArray = []
+    var pieChartItems: [PieChartItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +30,7 @@ class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource
         // Random Default Value
         let defaultItemCount = randomInteger(1, upper: 10)
         for _ in 1...defaultItemCount {
-            dataItems.add(randomItem())
+            pieChartItems.append(randomItem())
         }
     }
     
@@ -63,20 +63,20 @@ class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource
     
     @IBAction func deleteItem(_ sender: AnyObject) {
         
-        let indexToRemove: Int = randomInteger(0, upper: dataItems.count - 1)
+        let indexToRemove: Int = randomInteger(0, upper: pieChartItems.count - 1)
         
         print("Item removed at index \(indexToRemove)")
         
-        dataItems.removeObject(at: indexToRemove)
+        pieChartItems.remove(at: indexToRemove)
         pieChart.reloadData()
     }
     @IBAction func addItem(_ sender: AnyObject) {
         
-        let indexToAdd: Int = randomInteger(0, upper: dataItems.count - 1)
+        let indexToAdd: Int = randomInteger(0, upper: pieChartItems.count - 1)
         
         print("Item added at index \(indexToAdd)")
         
-        dataItems.insert(randomItem(), at: indexToAdd)
+        pieChartItems.insert(randomItem(), at: indexToAdd)
         pieChart.reloadData()
     }
     
@@ -104,17 +104,16 @@ class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource
     }
     
     func randomItem() -> PieChartItem {
-        let value = CGFloat(randomInteger(1, upper: 10))
+        let value = Float(randomInteger(1, upper: 10))
         let color = randomColor()
-        let description = "\(value)"
-        return PieChartItem(value: value, color: color, description: description)
+        return PieChartItem(value: value, color: color, text: nil)
     }
     
     /**
     *  MARK: ARPieChartDelegate
     */
     func pieChart(_ pieChart: ARPieChart, itemSelectedAtIndex index: Int) {
-        let itemSelected: PieChartItem = dataItems[index] as! PieChartItem
+        let itemSelected: PieChartItem = pieChartItems[index]
         selectionLabel.text = "Value: \(itemSelected.value)"
         selectionLabel.textColor = itemSelected.color
     }
@@ -123,49 +122,6 @@ class ViewController: UIViewController, ARPieChartDelegate, ARPieChartDataSource
         selectionLabel.text = "No Selection"
         selectionLabel.textColor = UIColor.black
     }
-    
-    
-    /**
-    *   MARK: ARPieChartDataSource
-    */
-    func numberOfSlicesInPieChart(_ pieChart: ARPieChart) -> Int {
-        return dataItems.count
-    }
-    
-    func pieChart(_ pieChart: ARPieChart, valueForSliceAtIndex index: Int) -> CGFloat {
-        let item: PieChartItem = dataItems[index] as! PieChartItem
-        return item.value
-    }
-    
-    func pieChart(_ pieChart: ARPieChart, colorForSliceAtIndex index: Int) -> UIColor {
-        let item: PieChartItem = dataItems[index] as! PieChartItem
-        return item.color
-    }
-    
-    func pieChart(_ pieChart: ARPieChart, descriptionForSliceAtIndex index: Int) -> String {
-        let item: PieChartItem = dataItems[index] as! PieChartItem
-        return item.description ?? ""
-    }
 }
 
-/**
-*  MARK: Pie chart data item
-*/
-open class PieChartItem {
-    
-    /// Data value
-    open var value: CGFloat = 0.0
-    
-    /// Color displayed on chart
-    open var color: UIColor = UIColor.black
-    
-    /// Description text
-    open var description: String?
-    
-    public init(value: CGFloat, color: UIColor, description: String?) {
-        self.value = value
-        self.color = color
-        self.description = description
-    }
-}
 
